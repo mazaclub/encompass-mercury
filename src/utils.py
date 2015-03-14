@@ -144,7 +144,7 @@ def hash_160_to_address(h160, addrtype = 0):
     if h160 is None or len(h160) is not 20:
         return None
     vh160 = chr(addrtype) + h160
-    h = Hash(vh160)
+    h = hash_handler.base58_hash(vh160)
     addr = vh160 + h[0:4]
     return b58encode(addr)
 
@@ -209,7 +209,7 @@ def b58decode(v, length):
 
 
 def EncodeBase58Check(vchIn):
-    hash = Hash(vchIn)
+    hash = hash_handler.base58_hash(vchIn)
     return b58encode(vchIn + hash[0:4])
 
 
@@ -217,7 +217,7 @@ def DecodeBase58Check(psz):
     vchRet = b58decode(psz, None)
     key = vchRet[0:-4]
     csum = vchRet[-4:]
-    hash = Hash(key)
+    hash = hash_handler.base58_hash(key)
     cs32 = hash[0:4]
     if cs32 != csum:
         return None
