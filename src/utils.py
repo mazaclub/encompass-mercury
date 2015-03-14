@@ -21,6 +21,8 @@ import time
 import hashlib
 import sys
 
+from chains import hashes
+
 __b58chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 __b58base = len(__b58chars)
 
@@ -58,6 +60,16 @@ hash_encode = lambda x: x[::-1].encode('hex')
 
 hash_decode = lambda x: x.decode('hex')[::-1]
 
+# Hash handling
+hash_handler = hashes.get_handler()
+if hash_handler is None:
+    hash_handler = hashes.HashHandler()
+
+def set_hashes(base_hash, pow_hash, header_hash, b58_hash):
+    hash_handler.set_base_hash(base_hash)
+    hash_handler.set_pow_hash(pow_hash)
+    hash_handler.set_header_hash(header_hash)
+    hash_handler.set_base58_hash(b58_hash)
 
 def header_to_string(res):
     pbh = res.get('prev_block_hash')

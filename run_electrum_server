@@ -77,6 +77,18 @@ def setup_network_params(config):
     if config.has_option('network', 'genesis_hash'):
         storage.GENESIS_HASH = config.get('network', 'genesis_hash')
 
+def setup_coin_params(config):
+    utils.PUBKEY_ADDRESS = int(config.get('coin', 'pubkey_address'))
+    utils.SCRIPT_ADDRESS = int(config.get('coin', 'script_address'))
+    storage.GENESIS_HASH = config.get('coin', 'genesis_hash')
+
+    # hashes
+    utils.set_hashes(
+        config.get('hash', 'hash_algo'),
+        config.get('hash', 'pow_hash'),
+        config.get('hash', 'header_hash'),
+        config.get('hash', 'base58_hash'))
+
 def create_config(filename=None):
     config = ConfigParser.ConfigParser()
     # set some defaults, which will be overwritten by the config file
@@ -128,6 +140,76 @@ def create_config(filename=None):
 
     return config
 
+def create_coin_config(filename):
+    coin_config = ConfigParser.ConfigParser()
+    coin_config.add_section('coin')
+    coin_config.add_section('hash')
+    coin_config.add_section('coind')
+    if not filename:
+        for path in ('/etc/encompass/', 'chains/'):
+            filename = path + 'mazacoin.conf'
+            if os.path.isfile(filename):
+                break
+    if not os.path.isfile(filename):
+        print 'could not find coin configuration file "%s"' % filename
+        sys.exit(1)
+    attempt_read_config(coin_config, filename)
+
+    return coin_config
+
+def update_config_with_coin(config, coin_config):
+    # coin section
+    pubkey_addr = coin_config.get('coin', 'pubkey_address')
+    script_addr = coin_config.get('coin', 'script_address')
+    genesis_hash = coin_config.get('coin', 'genesis_hash')
+    code = coin_config.get('coin', 'code')
+
+    config.add_section('coin')
+    config.set('coin', 'pubkey_address', pubkey_addr)
+    config.set('coin', 'script_address', script_addr)
+    config.set('coin', 'genesis_hash', genesis_hash)
+    config.set('coin', 'code', code)
+
+    # leveldb path
+    dbpath = config.get('leveldb', 'path')
+    # append trailing /
+    if dbpath[-1] != '/':
+        dbpath = ''.join( [dbpath, '/'] )
+    # append coin code as directory
+    dbpath = ''.join( [dbpath, code.lower()] )
+    config.set('leveldb', 'path', dbpath)
+
+    # hash
+    try:
+        base_hash = coin_config.get('hash', 'hash_algo')
+    except ConfigParser.NoOptionError:
+        base_hash = 'sha256'
+    try:
+        pow_hash = coin_config.get('hash', 'pow_hash')
+    except ConfigParser.NoOptionError:
+        pow_hash = base_hash
+    try:
+        header_hash = coin_config.get('hash', 'header_hash')
+    except ConfigParser.NoOptionError:
+        header_hash = base_hash
+    try:
+        b58_hash = coin_config.get('hash', 'base58_hash')
+    except ConfigParser.NoOptionError:
+        b58_hash = base_hash
+    config.set('hash', 'hash_algo', base_hash)
+    config.set('hash', 'pow_hash', pow_hash)
+    config.set('hash', 'header_hash', header_hash)
+    config.set('hash', 'base58_hash', b58_hash)
+
+    # daemon
+    coind_user = coin_config.get('coind', 'coind_user')
+    coind_pass = coin_config.get('coind', 'coind_password')
+    coind_host = coin_config.get('coind', 'coind_host')
+    coind_port = coin_config.get('coind', 'coind_port')
+    config.set('bitcoind', 'bitcoind_user', coind_user)
+    config.set('bitcoind', 'bitcoind_password', coind_pass)
+    config.set('bitcoind', 'bitcoind_host', coind_host)
+    config.set('bitcoind', 'bitcoind_port', coind_port)
 
 def run_rpc_command(params, electrum_rpc_port):
     cmd = params[0]
@@ -194,9 +276,11 @@ def get_port(config, name):
     except:
         return None
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--conf', metavar='path', default=None, help='specify a configuration file')
+    parser.add_argument('--coin', metavar='currency', default=None, help='specify a coin configuration file')
     parser.add_argument('command', nargs='*', default=[], help='send a command to the server')
     args = parser.parse_args()
 
@@ -213,7 +297,11 @@ if __name__ == '__main__':
     ssl_certfile = config.get('server', 'ssl_certfile')
     ssl_keyfile = config.get('server', 'ssl_keyfile')
 
-    setup_network_params(config)
+    # coin conf
+    coin_config = create_coin_config(args.coin)
+
+    update_config_with_coin(config, coin_config)
+    setup_coin_params(config)
 
     if ssl_certfile is '' or ssl_keyfile is '':
         stratum_tcp_ssl_port = None
