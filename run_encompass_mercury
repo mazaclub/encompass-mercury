@@ -147,8 +147,9 @@ def create_coin_config(filename):
     coin_config.add_section('coind')
     if not filename:
         for path in ('/etc/encompass/', 'chains/'):
-            filename = path + 'mazacoin.conf'
-            if os.path.isfile(filename):
+            conffilename = ''.join([ path, filename ])
+            if os.path.isfile(conffilename):
+                filename = conffilename
                 break
     if not os.path.isfile(filename):
         print 'could not find coin configuration file "%s"' % filename
