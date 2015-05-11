@@ -23,6 +23,8 @@ class IrcThread(threading.Thread):
         self.report_stratum_http_port = config.get('server', 'report_stratum_http_port')
         self.report_stratum_tcp_ssl_port = config.get('server', 'report_stratum_tcp_ssl_port')
         self.report_stratum_http_ssl_port = config.get('server', 'report_stratum_http_ssl_port')
+        self.irc_channel = config.get('server', 'irc_channel')
+        self.irc_server_prefix = config.get('server', 'irc_server_prefix')
         self.host = config.get('server', 'host')
         self.report_host = config.get('server', 'report_host')
         self.nick = config.get('server', 'irc_nick')
@@ -40,7 +42,7 @@ class IrcThread(threading.Thread):
             self.nick = Hash(self.host)[:5].encode("hex")
         self.pruning = True
         self.pruning_limit = config.get('leveldb', 'pruning_limit')
-        self.nick = 'E_' + self.nick
+        self.nick = self.irc_server_prefix + self.nick
         self.password = None
 
     def getname(self):
@@ -67,20 +69,25 @@ class IrcThread(threading.Thread):
         threading.Thread.start(self)
  
     def on_connect(self, connection, event):
-        connection.join("#electrum")
+        if self.irc_channel is None:
+            logger.error("irc: no channel name")
+            raise BaseException("no irc channel")
+        if not self.irc_channel.startswith('#'):
+            self.irc_channel = ''.join([ '#', self.irc_channel ])
+        connection.join(self.irc_channel)
 
     def on_join(self, connection, event):
-        m = re.match("(E_.*)!", event.source)
+        m = re.match("({}.*)!".format(self.irc_server_prefix), event.source)
         if m:
             connection.who(m.group(1))
 
     def on_quit(self, connection, event):
-        m = re.match("(E_.*)!", event.source)
+        m = re.match("({}.*)!".format(self.irc_server_prefix), event.source)
         if m:
             self.queue.put(('quit', [m.group(1)]))
         
     def on_kick(self, connection, event):
-        m = re.match("(E_.*)", event.arguments[0])
+        m = re.match("({}.*)".format(self.irc_server_prefix), event.arguments[0])
         if m:
             self.queue.put(('quit', [m.group(1)]))
 
@@ -102,7 +109,7 @@ class IrcThread(threading.Thread):
 
     def on_name(self, connection, event):
         for s in event.arguments[2].split():
-            if s.startswith("E_"):
+            if s.startswith(self.irc_server_prefix):
                 connection.who(s)
 
     def run(self):

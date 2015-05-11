@@ -145,6 +145,7 @@ def create_coin_config(filename):
     coin_config.add_section('coin')
     coin_config.add_section('hash')
     coin_config.add_section('coind')
+    coin_config.add_section('irc')
     if not filename:
         for path in ('/etc/encompass/', 'chains/'):
             conffilename = ''.join([ path, filename ])
@@ -211,6 +212,19 @@ def update_config_with_coin(config, coin_config):
     config.set('bitcoind', 'bitcoind_password', coind_pass)
     config.set('bitcoind', 'bitcoind_host', coind_host)
     config.set('bitcoind', 'bitcoind_port', coind_port)
+
+    # irc
+    try:
+        irc_channel = coin_config.get('irc', 'irc_channel')
+    except ConfigParser.NoOptionError:
+        irc_channel = None
+    try:
+        irc_server_prefix = coin_config.get('irc', 'server_nick_prefix')
+    except ConfigParser.NoOptionError:
+        irc_server_prefix = 'E_'
+
+    config.set('server', 'irc_channel', irc_channel)
+    config.set('server', 'irc_server_prefix', irc_server_prefix)
 
 def run_rpc_command(params, electrum_rpc_port):
     cmd = params[0]
