@@ -64,6 +64,7 @@ hash_decode = lambda x: x.decode('hex')[::-1]
 hash_handler = hashes.get_handler()
 if hash_handler is None:
     hash_handler = hashes.HashHandler()
+    hashes.set_handler(hash_handler)
 
 def set_hashes(base_hash, pow_hash, header_hash, b58_hash):
     hash_handler.set_base_hash(base_hash)
