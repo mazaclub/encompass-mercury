@@ -1,9 +1,16 @@
 from setuptools import setup
 
+data_files = []
+
+data_files += [
+    ('/etc/encompass/', ['src/chains/bitcoin.conf', 'src/chains/mazacoin.conf'])
+]
+
 setup(
     name="encompass-mercury",
     version="0.9",
     scripts=['run_encompass_mercury','encompass-mercury'],
+    data_files=data_files,
     install_requires=['plyvel','jsonrpclib', 'irc>=11'],
     package_dir={
         'encompassmercury':'src'
