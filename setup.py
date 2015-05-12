@@ -11,7 +11,13 @@ setup(
     version="0.9",
     scripts=['run_encompass_mercury','encompass-mercury'],
     data_files=data_files,
-    install_requires=['plyvel','jsonrpclib', 'irc>=11'],
+    install_requires=[
+        'plyvel',
+        'jsonrpclib',
+        'irc>=11',
+        # scrypt 1024 (i.e. litecoin scrypt)
+        'ltc_scrypt==1.0'
+    ],
     package_dir={
         'encompassmercury':'src'
         },
