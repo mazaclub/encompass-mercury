@@ -28,8 +28,10 @@ __b58base = len(__b58chars)
 
 global PUBKEY_ADDRESS
 global SCRIPT_ADDRESS
+global GENESIS_HASH
 PUBKEY_ADDRESS = 0
 SCRIPT_ADDRESS = 5
+GENESIS_HASH = '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'
 
 def rev_hex(s):
     return s.decode('hex')[::-1].encode('hex')

@@ -68,19 +68,19 @@ def setup_network_params(config):
     params = networks.params.get(type)
     utils.PUBKEY_ADDRESS = int(params.get('pubkey_address'))
     utils.SCRIPT_ADDRESS = int(params.get('script_address'))
-    storage.GENESIS_HASH = params.get('genesis_hash')
+    utils.GENESIS_HASH = params.get('genesis_hash')
 
     if config.has_option('network', 'pubkey_address'):
         utils.PUBKEY_ADDRESS = config.getint('network', 'pubkey_address')
     if config.has_option('network', 'script_address'):
         utils.SCRIPT_ADDRESS = config.getint('network', 'script_address')
     if config.has_option('network', 'genesis_hash'):
-        storage.GENESIS_HASH = config.get('network', 'genesis_hash')
+        utils.GENESIS_HASH = config.get('network', 'genesis_hash')
 
 def setup_coin_params(config):
     utils.PUBKEY_ADDRESS = int(config.get('coin', 'pubkey_address'))
     utils.SCRIPT_ADDRESS = int(config.get('coin', 'script_address'))
-    storage.GENESIS_HASH = config.get('coin', 'genesis_hash')
+    utils.GENESIS_HASH = config.get('coin', 'genesis_hash')
 
     # hashes
     utils.set_hashes(

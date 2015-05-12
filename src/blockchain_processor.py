@@ -12,7 +12,7 @@ import urllib
 import deserialize
 from processor import Processor, print_log
 from utils import *
-from storage import Storage
+from storage import get_new_storage
 from utils import logger
 from chains import hashes
 
@@ -52,7 +52,7 @@ class BlockchainProcessor(Processor):
             self.test_reorgs = config.getboolean('leveldb', 'test_reorgs')   # simulate random blockchain reorgs
         except:
             self.test_reorgs = False
-        self.storage = Storage(config, shared, self.test_reorgs)
+        self.storage = get_new_storage(config, shared, self.test_reorgs)
 
         self.dblock = threading.Lock()
 
