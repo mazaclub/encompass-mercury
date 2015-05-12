@@ -1,4 +1,5 @@
 '''Hashing algorithms'''
+import hashlib
 
 sha_256 = lambda x: hashlib.sha256(hashlib.sha256(x).digest()).digest()
 

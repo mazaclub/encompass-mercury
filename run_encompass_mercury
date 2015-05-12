@@ -147,10 +147,10 @@ def create_coin_config(filename):
     coin_config.add_section('coind')
     coin_config.add_section('irc')
     if not filename:
+        print 'no coin file given. using mazacoin'
         for path in ('/etc/encompass/', 'chains/'):
-            conffilename = ''.join([ path, filename ])
-            if os.path.isfile(conffilename):
-                filename = conffilename
+            filename = ''.join([ path, 'mazacoin.conf' ])
+            if os.path.isfile(filename):
                 break
     if not os.path.isfile(filename):
         print 'could not find coin configuration file "%s"' % filename
@@ -179,6 +179,8 @@ def update_config_with_coin(config, coin_config):
         dbpath = ''.join( [dbpath, '/'] )
     # append coin code as directory
     dbpath = ''.join( [dbpath, code.lower()] )
+    if not os.path.isdir(dbpath):
+        os.mkdir(dbpath)
     config.set('leveldb', 'path', dbpath)
 
     # hash
@@ -198,6 +200,7 @@ def update_config_with_coin(config, coin_config):
         b58_hash = coin_config.get('hash', 'base58_hash')
     except ConfigParser.NoOptionError:
         b58_hash = base_hash
+    config.add_section('hash')
     config.set('hash', 'hash_algo', base_hash)
     config.set('hash', 'pow_hash', pow_hash)
     config.set('hash', 'header_hash', header_hash)
