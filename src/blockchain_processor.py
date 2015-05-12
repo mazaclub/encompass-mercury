@@ -412,7 +412,7 @@ class BlockchainProcessor(Processor):
             self.storage.write_undo_info(block_height, self.bitcoind_height, undo_info)
 
         # add the max
-        self.storage.db_undo.put('height', repr( (block_hash, block_height, self.storage.db_version) ))
+        self.storage.write_undo_height(block_hash, block_height)
 
         for addr in touched_addr:
             self.invalidate_cache(addr)

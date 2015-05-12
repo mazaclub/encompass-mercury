@@ -163,6 +163,9 @@ class LevelDBStorage(Storage):
         if height > bitcoind_height - 100 or self.test_reorgs:
             self.db_undo.put("undo_info_%d" % (height % 100), repr(undo_info))
 
+    def write_undo_height(self, block_hash, block_height):
+        self.db_undo.put('height', repr( (block_hash, block_height, self.db_version) ))
+
 
     def common_prefix(self, word1, word2):
         max_len = min(len(word1),len(word2))

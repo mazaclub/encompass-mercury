@@ -35,6 +35,9 @@ class Storage(object):
     def write_undo_info(self, height, bitcoind_height, undo_info):
         pass
 
+    def write_undo_height(self, block_hash, block_height):
+        pass
+
     # necessary??
     def update_hashes(self):
         pass
