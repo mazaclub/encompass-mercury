@@ -70,6 +70,9 @@ class ServerProcessor(Processor):
         elif method == 'server.version':
             result = VERSION
 
+        elif method == 'server.coin':
+            result = self.config.get('coin', 'code')
+
         else:
             raise BaseException("unknown method: %s"%repr(method))
 
