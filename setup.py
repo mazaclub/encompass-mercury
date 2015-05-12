@@ -27,7 +27,9 @@ setup(
         'encompassmercury.version',
         'encompassmercury.ircthread',
         'encompassmercury.stratum_tcp',
-        'encompassmercury.stratum_http'
+        'encompassmercury.stratum_http',
+        'encompassmercury.chains.__init__',
+        'encompassmercury.chains.hashes'
     ],
     description="Encompass Mercury Server",
     author="Tyler Willis",
