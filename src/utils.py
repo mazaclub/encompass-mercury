@@ -33,6 +33,10 @@ PUBKEY_ADDRESS = 0
 SCRIPT_ADDRESS = 5
 GENESIS_HASH = '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'
 
+def address_prefix(p2sh=False):
+    if p2sh: return SCRIPT_ADDRESS
+    return PUBKEY_ADDRESS
+
 def genesis_block_hash():
     return GENESIS_HASH
 
@@ -132,16 +136,16 @@ def public_key_to_bc_address(public_key):
 def hash_160_to_pubkey_address(h160, addrtype=None):
     """ deprecated """
     if not addrtype:
-        addrtype = PUBKEY_ADDRESS
+        addrtype = address_prefix()
     return hash_160_to_address(h160, addrtype)
 
 
 def hash_160_to_pubkey_address(h160):
-    return hash_160_to_address(h160, PUBKEY_ADDRESS)
+    return hash_160_to_address(h160, address_prefix())
 
 
 def hash_160_to_script_address(h160):
-    return hash_160_to_address(h160, SCRIPT_ADDRESS)
+    return hash_160_to_address(h160, address_prefix(p2sh=True))
 
 
 def hash_160_to_address(h160, addrtype = 0):
