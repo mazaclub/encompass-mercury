@@ -22,23 +22,15 @@ import hashlib
 import sys
 
 from chains import hashes
+import chainparams
+from chainparams import get_active_chain
 
 __b58chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 __b58base = len(__b58chars)
 
-global PUBKEY_ADDRESS
-global SCRIPT_ADDRESS
-global GENESIS_HASH
-PUBKEY_ADDRESS = 0
-SCRIPT_ADDRESS = 5
-GENESIS_HASH = '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'
-
 def address_prefix(p2sh=False):
-    if p2sh: return SCRIPT_ADDRESS
-    return PUBKEY_ADDRESS
-
-def genesis_block_hash():
-    return GENESIS_HASH
+    if p2sh: return get_active_chain().p2sh_version
+    return get_active_chain.p2pkh_version
 
 def rev_hex(s):
     return s.decode('hex')[::-1].encode('hex')
@@ -68,18 +60,6 @@ hash_encode = lambda x: x[::-1].encode('hex')
 
 
 hash_decode = lambda x: x.decode('hex')[::-1]
-
-# Hash handling
-hash_handler = hashes.get_handler()
-if hash_handler is None:
-    hash_handler = hashes.HashHandler()
-    hashes.set_handler(hash_handler)
-
-def set_hashes(base_hash, pow_hash, header_hash, b58_hash):
-    hash_handler.set_base_hash(base_hash)
-    hash_handler.set_pow_hash(pow_hash)
-    hash_handler.set_header_hash(header_hash)
-    hash_handler.set_base58_hash(b58_hash)
 
 def header_to_string(res):
     pbh = res.get('prev_block_hash')
@@ -154,7 +134,7 @@ def hash_160_to_address(h160, addrtype = 0):
     if h160 is None or len(h160) is not 20:
         return None
     vh160 = chr(addrtype) + h160
-    h = hash_handler.base58_hash(vh160)
+    h = get_active_chain().base58_hash(vh160)
     addr = vh160 + h[0:4]
     return b58encode(addr)
 
@@ -219,7 +199,7 @@ def b58decode(v, length):
 
 
 def EncodeBase58Check(vchIn):
-    hash = hash_handler.base58_hash(vchIn)
+    hash = get_active_chain().base58_hash(vchIn)
     return b58encode(vchIn + hash[0:4])
 
 
@@ -227,7 +207,7 @@ def DecodeBase58Check(psz):
     vchRet = b58decode(psz, None)
     key = vchRet[0:-4]
     csum = vchRet[-4:]
-    hash = hash_handler.base58_hash(key)
+    hash = get_active_chain().base58_hash(key)
     cs32 = hash[0:4]
     if cs32 != csum:
         return None

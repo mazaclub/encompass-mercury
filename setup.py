@@ -1,16 +1,9 @@
 from setuptools import setup
 
-data_files = []
-
-data_files += [
-    ('/etc/encompass/', ['src/chains/bitcoin.conf', 'src/chains/mazacoin.conf'])
-]
-
 setup(
     name="encompass-mercury",
     version="0.1",
     scripts=['run_encompass_mercury','encompass-mercury'],
-    data_files=data_files,
     install_requires=[
         'plyvel',
         'jsonrpclib',
@@ -37,7 +30,10 @@ setup(
         'encompassmercury.stratum_tcp',
         'encompassmercury.stratum_http',
         'encompassmercury.chains.__init__',
-        'encompassmercury.chains.hashes'
+        'encompassmercury.chains.hashes',
+        'encompassmercury.chains.cryptocur',
+        'encompassmercury.chains.bitcoin',
+        'encompassmercury.chains.mazacoin'
     ],
     description="Encompass Mercury Server",
     author="Tyler Willis",

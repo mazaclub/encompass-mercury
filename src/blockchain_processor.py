@@ -15,13 +15,14 @@ from utils import *
 from storage import get_new_storage
 from utils import logger
 from chains import hashes
+import chainparams
 
 class BlockchainProcessor(Processor):
 
     def __init__(self, config, shared):
         Processor.__init__(self)
 
-        self.hash_handler = hashes.get_handler()
+        self.active_chain = chainparams.get_active_chain()
 
         self.mtimes = {} # monitoring
         self.shared = shared
@@ -189,7 +190,7 @@ class BlockchainProcessor(Processor):
         self.flush_headers()
 
     def hash_header(self, header):
-        return rev_hex(self.hash_handler.header_hash(header_to_string(header).decode('hex')).encode('hex'))
+        return rev_hex(self.active_chain.header_hash(header_to_string(header).decode('hex')).encode('hex'))
 
     def read_header(self, block_height):
         if os.path.exists(self.headers_filename):

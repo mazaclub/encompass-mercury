@@ -6,7 +6,8 @@ import sys
 
 from storage_base import Storage
 from processor import print_log, logger
-from utils import bc_address_to_hash_160, hash_160_to_pubkey_address, hex_to_int, int_to_hex, Hash, genesis_block_hash
+from utils import bc_address_to_hash_160, hash_160_to_pubkey_address, hex_to_int, int_to_hex, Hash
+import chainparams
 
 """
 Patricia tree for hashing unspents
@@ -46,7 +47,7 @@ class LevelDBStorage(Storage):
         except:
             print_log('initializing database')
             self.height = 0
-            self.last_hash = genesis_block_hash()
+            self.last_hash = chainparams.get_active_chain().genesis_hash
             db_version = self.db_version
             # write root
             self.put_node('', {})
