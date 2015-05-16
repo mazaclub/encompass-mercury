@@ -6,6 +6,7 @@ import irc.client
 from utils import logger
 from utils import Hash
 from version import VERSION
+import chainparams
 
 out_msg = []
 
@@ -23,8 +24,8 @@ class IrcThread(threading.Thread):
         self.report_stratum_http_port = config.get('server', 'report_stratum_http_port')
         self.report_stratum_tcp_ssl_port = config.get('server', 'report_stratum_tcp_ssl_port')
         self.report_stratum_http_ssl_port = config.get('server', 'report_stratum_http_ssl_port')
-        self.irc_channel = config.get('server', 'irc_channel')
-        self.irc_server_prefix = config.get('server', 'irc_server_prefix')
+        self.irc_channel = chainparams.get_active_chain().irc_channel
+        self.irc_server_prefix = chainparams.get_active_chain().irc_nick_prefix
         self.host = config.get('server', 'host')
         self.report_host = config.get('server', 'report_host')
         self.nick = config.get('server', 'irc_nick')
@@ -69,9 +70,6 @@ class IrcThread(threading.Thread):
         threading.Thread.start(self)
  
     def on_connect(self, connection, event):
-        if self.irc_channel is None:
-            logger.error("irc: no channel name")
-            raise BaseException("no irc channel")
         if not self.irc_channel.startswith('#'):
             self.irc_channel = ''.join([ '#', self.irc_channel ])
         connection.join(self.irc_channel)
