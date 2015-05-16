@@ -8,7 +8,7 @@ data_files += [
 
 setup(
     name="encompass-mercury",
-    version="0.9",
+    version="0.1",
     scripts=['run_encompass_mercury','encompass-mercury'],
     data_files=data_files,
     install_requires=[

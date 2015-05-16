@@ -68,7 +68,7 @@ class ServerProcessor(Processor):
             result = self.get_peers()
 
         elif method == 'server.version':
-            result = VERSION
+            result = ('mercury', VERSION)
 
         elif method == 'server.coin':
             result = self.config.get('coin', 'code')
