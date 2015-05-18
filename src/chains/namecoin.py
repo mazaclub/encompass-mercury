@@ -17,6 +17,14 @@ class Currency(cryptocur.CryptoCur):
     def transaction_get_address_from_output_script(self, bytes, res):
         decoded = [ x for x in script_GetOp(bytes) ]
 
+        # name new
+        match = [ opcodes.OP_1, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP, opcodes.OP_DUP, opcodes.OP_HASH160,
+                opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
+        if match_decoded(decoded, match):
+            addr = hash_160_to_pubkey_address(decoded[5][1])
+            res['address'] = addr
+            return
+
         # name firstupdate
         match = [ opcodes.OP_2, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP,
                 opcodes.OP_2DROP, opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
