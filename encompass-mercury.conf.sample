@@ -45,3 +45,9 @@ coind_user = mazacoinrpc
 coind_password = mazacoinpassword
 coind_host = localhost
 coind_port = 12832
+
+[nmc]
+coind_user = namecoinrpc
+coind_password = namecoinpassword
+coind_host = localhost
+coind_port = 8336

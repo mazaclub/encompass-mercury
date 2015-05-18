@@ -15,6 +15,7 @@ from utils import *
 from storage import get_new_storage
 from utils import logger
 import chainparams
+from chainparams import run_chainhook
 
 class BlockchainProcessor(Processor):
 
@@ -561,7 +562,11 @@ class BlockchainProcessor(Processor):
             num = int(params[0])
             result = self.bitcoind('estimatefee', [num])
 
-        else:
+        r = { 'known_method': False, 'result': None }
+        run_chainhook('blockchain_process_request', self, request, cache_only)
+        result = r['result']
+
+        if result is None and r['known_method'] == False:
             raise BaseException("unknown method:%s" % method)
 
         if cache_only and result == -1:

@@ -7,6 +7,8 @@ import string
 import struct
 import types
 
+import chainparams
+from chainparams import run_chainhook
 from utils import hash_160_to_pubkey_address, hash_160_to_script_address, public_key_to_pubkey_address, hash_encode,\
     hash_160
 
@@ -385,7 +387,9 @@ def get_address_from_input_script(bytes):
             pubkeys = [ dec2[1][1].encode('hex'), dec2[2][1].encode('hex'), dec2[3][1].encode('hex') ]
             return pubkeys, signatures, hash_160_to_script_address(hash_160(redeemScript))
 
-    return [], [], None
+    r = {'pubkeys':[], 'signatures':[], 'address':None}
+    run_chainhook('transaction_get_address_from_input_script', bytes, r)
+    return r['pubkeys'], r['signatures'], r['address']
 
 
 def get_address_from_output_script(bytes):
@@ -423,4 +427,6 @@ def get_address_from_output_script(bytes):
         addr = hash_160_to_script_address(decoded[1][1])
         return addr
 
-    return None
+    r = {'address': None}
+    run_chainhook('transaction_get_address_from_output_script', bytes, r)
+    return r['address']
