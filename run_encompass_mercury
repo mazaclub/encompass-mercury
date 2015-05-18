@@ -127,8 +127,6 @@ def update_config_with_coin(config, coin_instance):
         dbpath = ''.join( [dbpath, '/'] )
     # append coin code as directory
     dbpath = ''.join( [dbpath, code] )
-    if not os.path.isdir(dbpath):
-        os.mkdir(dbpath)
     config.set('leveldb', 'path', dbpath)
 
     # daemon
