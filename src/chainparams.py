@@ -23,7 +23,11 @@ def init_chains():
     chain_names = [name for a, name, b in pkgutil.iter_modules(chains.__path__)]
     chain_modules = [ __import__('encompassmercury.chains.'+name, fromlist=['encompassmercury.chains']) for name in chain_names]
 
+    # these are not actual currency modules, so skip them
+    non_coins = ['cryptocur', 'hashes']
     for name, c in zip(chain_names, chain_modules):
+        if name in non_coins:
+            continue
         try:
             blockchains.append( c.Currency() )
         except Exception:
