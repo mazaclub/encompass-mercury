@@ -563,7 +563,7 @@ class BlockchainProcessor(Processor):
             result = self.bitcoind('estimatefee', [num])
 
         r = { 'known_method': False, 'result': None }
-        run_chainhook('blockchain_process_request', self, request, cache_only)
+        run_chainhook('blockchain_process_request', self, request, cache_only, r)
         result = r['result']
 
         if result is None and r['known_method'] == False:
