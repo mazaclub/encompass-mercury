@@ -2,6 +2,15 @@
 import hashes
 from hashes import hash_algos
 
+chainhook_names = set()
+chainhooks = {}
+
+def chainhook(func):
+    n = func.func_name
+    if not n in chainhook_names:
+        chainhook_names.add(n)
+    return func
+
 class CryptoCur(object):
     """Base class for a cryptocurrency"""
 
@@ -29,3 +38,11 @@ class CryptoCur(object):
 
     # Nick prefix that all servers have
     irc_nick_prefix = ''
+
+    def __init__(self):
+        for k in dir(self):
+            if k in chainhook_names:
+                l = chainhooks.get(k, [])
+                if not self in l:
+                    l.append( self )
+            chainhooks[k] = l

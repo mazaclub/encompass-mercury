@@ -49,3 +49,23 @@ def get_chain_instance(chaincode):
     for c in blockchains:
         if chaincode.upper() == c.code.upper():
             return c
+
+def run_chainhook(name, *args):
+    results = []
+    f_list = chains.cryptocur.chainhooks.get(name, [])
+    active_chain = get_active_chain()
+    for chain in f_list:
+        if not chain.__class__ == active_chain.__class__:
+            continue
+        try:
+            f = getattr(chain, name)
+            r = f(*args)
+        except Exception:
+            print("Chainhook error")
+            r = False
+        if r:
+            results.append(r)
+
+    if results:
+        assert len(results) == 1, results
+        return results[0]
