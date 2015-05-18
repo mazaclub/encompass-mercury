@@ -21,7 +21,6 @@ import time
 import hashlib
 import sys
 
-from chains import hashes
 import chainparams
 from chainparams import get_active_chain
 
@@ -30,7 +29,7 @@ __b58base = len(__b58chars)
 
 def address_prefix(p2sh=False):
     if p2sh: return get_active_chain().p2sh_version
-    return get_active_chain.p2pkh_version
+    return get_active_chain().p2pkh_version
 
 def rev_hex(s):
     return s.decode('hex')[::-1].encode('hex')

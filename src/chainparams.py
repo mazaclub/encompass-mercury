@@ -23,7 +23,7 @@ def init_chains():
     chain_names = [name for a, name, b in pkgutil.iter_modules(chains.__path__)]
     chain_modules = [ __import__('encompassmercury.chains.'+name, fromlist=['encompassmercury.chains']) for name in chain_names]
 
-    for name, c in zip(chain_name, chain_modules):
+    for name, c in zip(chain_names, chain_modules):
         try:
             blockchains.append( c.Currency() )
         except Exception:

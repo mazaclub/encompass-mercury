@@ -14,7 +14,6 @@ from processor import Processor, print_log
 from utils import *
 from storage import get_new_storage
 from utils import logger
-from chains import hashes
 import chainparams
 
 class BlockchainProcessor(Processor):
