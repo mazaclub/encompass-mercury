@@ -8,6 +8,15 @@ for those wishing to write a module for an arbitrary coin.
 ## Format
 
 The base class `CryptoCur` is largely self-explanatory.
+The class for a currency should be named `Currency`, or, it can be named anything such as `CoinClassName`,
+but a statement, `Currency = CoinClassName`, must be present after the class definition.
+
+The attributes that need to be defined are as follows:
+
+- `code`: Abbreviation for the currency (e.g. BTC, MZC).
+- `p2pkh_version`: Base58 Pay-To-Public-Key-Hash version.
+- `p2sh_version`: Base58 Pay-To-Script-Hash version.
+- `genesis_hash`: Hash of the genesis block.
 
 
 ### hash algorithms
@@ -29,7 +38,8 @@ Info about the IRC channel this chain's servers gather at.
 
 ## Hashes
 
-These are the valid values for the `hash_*` class attributes:
+These are the valid values for the `hash_*` class attributes.
+The `hash_algos` dictionary is defined in hashes.py.
 
 - `sha256`: SHA-256d (Two rounds of SHA-256). The most popular and widely-used algorithm in cryptocurrency.
 - `scrypt`: Scrypt Litecoin implementation (N = 1024; r = 1; p = 1).

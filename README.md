@@ -9,7 +9,7 @@ Forked from [Electrum Server](https://github.com/spesmilo/electrum)
 Features
 --------
 
-  * Arbitrary blockchains can be used via .conf files. See
+  * Arbitrary blockchains can be used via modules. See
     src/chains/README.md for details.
 
   * The server indexes UTXOs by address, in a Patricia tree structure
