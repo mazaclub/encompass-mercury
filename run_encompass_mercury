@@ -130,10 +130,14 @@ def update_config_with_coin(config, coin_instance):
     config.set('leveldb', 'path', dbpath)
 
     # daemon
-    coind_user = config.get(code, 'coind_user')
-    coind_pass = config.get(code, 'coind_password')
-    coind_host = config.get(code, 'coind_host')
-    coind_port = config.get(code, 'coind_port')
+    try:
+        coind_user = config.get(code, 'coind_user')
+        coind_pass = config.get(code, 'coind_password')
+        coind_host = config.get(code, 'coind_host')
+        coind_port = config.get(code, 'coind_port')
+    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+        print('Could not get coind options from [{}] section of conf'.format(code))
+        sys.exit(1)
     config.set('bitcoind', 'bitcoind_user', coind_user)
     config.set('bitcoind', 'bitcoind_password', coind_pass)
     config.set('bitcoind', 'bitcoind_host', coind_host)

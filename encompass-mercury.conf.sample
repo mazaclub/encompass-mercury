@@ -22,7 +22,7 @@ donation_address =
 
 [leveldb]
 # path to your database
-path = 
+path = /var/encompass-mercury
 # for each address, history will be pruned if it is longer than this limit
 pruning_limit = 100
 
@@ -32,3 +32,16 @@ bitcoind_port = 8332
 # user and password from bitcoin.conf
 bitcoind_user = 
 bitcoind_password = 
+
+# coin configurations
+[btc]
+coind_user = bitcoinrpc
+coind_password = bitcoinpassword
+coind_host = localhost
+coind_port = 8332
+
+[mzc]
+coind_user = mazacoinrpc
+coind_password = mazacoinpassword
+coind_host = localhost
+coind_port = 12832
