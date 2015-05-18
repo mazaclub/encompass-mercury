@@ -21,7 +21,6 @@ setup(
         'encompassmercury.storage_base',
         'encompassmercury.storage_leveldb',
         'encompassmercury.deserialize',
-        'encompassmercury.networks',
         'encompassmercury.blockchain_processor',
         'encompassmercury.server_processor',
         'encompassmercury.processor',

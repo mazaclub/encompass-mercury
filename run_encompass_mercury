@@ -31,7 +31,7 @@ if os.path.dirname(os.path.realpath(__file__)) == os.getcwd():
     imp.load_module('encompassmercury', *imp.find_module('src'))
   
 
-from encompassmercury import storage, chainparams, networks, utils
+from encompassmercury import storage, chainparams, utils
 from encompassmercury.processor import Dispatcher, print_log
 from encompassmercury.server_processor import ServerProcessor
 from encompassmercury.blockchain_processor import BlockchainProcessor
