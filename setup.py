@@ -16,6 +16,7 @@ setup(
         },
     py_modules=[
         'encompassmercury.__init__',
+        'encompassmercury.bitcoin',
         'encompassmercury.utils',
         'encompassmercury.storage',
         'encompassmercury.storage_base',
