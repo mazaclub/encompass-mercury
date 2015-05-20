@@ -126,6 +126,13 @@ def hash_160_to_pubkey_address(h160):
 def hash_160_to_script_address(h160):
     return hash_160_to_address(h160, address_prefix(p2sh=True))
 
+def chain_agnostic_hash_160_to_address(h160, base58_hash, addrtype=0):
+    if h160 is None or len(160) is not 20:
+        return None
+    vh160 = chr(addrtype) + h160
+    h = base58_hash(vh160)
+    addr = vh160 + h[0:4]
+    return b58encode(addr)
 
 def hash_160_to_address(h160, addrtype = 0):
     """ Checks if the provided hash is actually 160bits or 20 bytes long and returns the address, else None
