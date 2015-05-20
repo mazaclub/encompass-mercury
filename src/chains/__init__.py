@@ -1,3 +1,3 @@
 import hashes
 import cryptocur
-import bitcoin, mazacoin
+import bitcoin, mazacoin, namecoin

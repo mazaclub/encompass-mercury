@@ -11,8 +11,8 @@ class Currency(cryptocur.CryptoCur):
 
     genesis_hash = '000000000062b72c5e2ceb45fbc8587e807c155b0da735e6483dfba2f0a9c770'
 
-    from deserialize import opcodes, script_GetOp, match_decoded
-    from utils import hash_160_to_pubkey_address
+    from encompassmercury.deserialize import opcodes, script_GetOp, match_decoded
+    from encompassmercury.utils import hash_160_to_pubkey_address
     @chainhook
     def transaction_get_address_from_output_script(self, bytes, res):
         decoded = [ x for x in script_GetOp(bytes) ]

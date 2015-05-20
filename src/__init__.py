@@ -7,3 +7,4 @@ import version
 import irc
 import stratum_tcp, stratum_http
 import chainparams
+import chains
