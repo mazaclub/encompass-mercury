@@ -33,7 +33,8 @@ setup(
         'encompassmercury.chains.hashes',
         'encompassmercury.chains.cryptocur',
         'encompassmercury.chains.bitcoin',
-        'encompassmercury.chains.mazacoin'
+        'encompassmercury.chains.mazacoin',
+        'encompassmercury.chains.namecoin'
     ],
     description="Encompass Mercury Server",
     author="Tyler Willis",
