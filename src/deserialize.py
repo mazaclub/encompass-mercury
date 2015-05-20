@@ -387,7 +387,7 @@ def get_address_from_input_script(bytes):
             return pubkeys, signatures, hash_160_to_script_address(hash_160(redeemScript))
 
     r = {'pubkeys':[], 'signatures':[], 'address':None}
-    chainparams.run_chainhook('transaction_get_address_from_input_script', bytes, r)
+    chainparams.run_chainhook('transaction_get_address_from_input_script', bytes, opcodes, script_GetOp, match_decoded, r)
     return r['pubkeys'], r['signatures'], r['address']
 
 
@@ -427,5 +427,5 @@ def get_address_from_output_script(bytes):
         return addr
 
     r = {'address': None}
-    chainparams.run_chainhook('transaction_get_address_from_output_script', bytes, r)
+    chainparams.run_chainhook('transaction_get_address_from_output_script', bytes, opcodes, script_GetOp, match_decoded, r)
     return r['address']

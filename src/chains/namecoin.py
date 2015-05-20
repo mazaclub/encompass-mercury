@@ -11,17 +11,16 @@ class Currency(cryptocur.CryptoCur):
 
     genesis_hash = '000000000062b72c5e2ceb45fbc8587e807c155b0da735e6483dfba2f0a9c770'
 
-    from encompassmercury.deserialize import opcodes, script_GetOp, match_decoded
     from encompassmercury.utils import hash_160_to_pubkey_address
     @chainhook
-    def transaction_get_address_from_output_script(self, bytes, res):
+    def transaction_get_address_from_output_script(self, bytes, opcodes, script_GetOp, match_decoded, res):
         decoded = [ x for x in script_GetOp(bytes) ]
 
         # name new
         match = [ opcodes.OP_1, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP, opcodes.OP_DUP, opcodes.OP_HASH160,
                 opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
         if match_decoded(decoded, match):
-            addr = hash_160_to_pubkey_address(decoded[5][1])
+            addr = hash_160_to_pubkey_address(decoded[5][1], addrtype=self.p2pkh_version)
             res['address'] = addr
             return
 
@@ -29,7 +28,7 @@ class Currency(cryptocur.CryptoCur):
         match = [ opcodes.OP_2, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP,
                 opcodes.OP_2DROP, opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
         if match_decoded(decoded, match):
-            addr = hash_160_to_pubkey_address(decoded[8][1])
+            addr = hash_160_to_pubkey_address(decoded[8][1], addrtype=self.p2pkh_version)
             res['address'] = addr
             return
 
@@ -37,7 +36,7 @@ class Currency(cryptocur.CryptoCur):
         match = [ opcodes.OP_3, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP, opcodes.OP_DROP,
                 opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
         if match_decoded(decoded, match):
-            addr = hash_160_to_pubkey_address(decoded[7][1])
+            addr = hash_160_to_pubkey_address(decoded[7][1], addrtype=self.p2pkh_version)
             res['address'] = addr
             return
 
