@@ -14,11 +14,14 @@ from processor import Processor, print_log
 from utils import *
 from storage import Storage
 from utils import logger
+import chainparams
 
 class BlockchainProcessor(Processor):
 
     def __init__(self, config, shared):
         Processor.__init__(self)
+
+        self.active_chain = chainparams.get_active_chain()
 
         self.mtimes = {} # monitoring
         self.shared = shared
@@ -186,7 +189,7 @@ class BlockchainProcessor(Processor):
         self.flush_headers()
 
     def hash_header(self, header):
-        return rev_hex(Hash(header_to_string(header).decode('hex')).encode('hex'))
+        return rev_hex(self.active_chain.header_hash(header_to_string(header).decode('hex')).encode('hex'))
 
     def read_header(self, block_height):
         if os.path.exists(self.headers_filename):
@@ -321,7 +324,7 @@ class BlockchainProcessor(Processor):
                 merkle.append(merkle[-1])
             n = []
             while merkle:
-                new_hash = Hash(merkle[0] + merkle[1])
+                new_hash = self.active_chain.tx_hash(merkle[0] + merkle[1])
                 if merkle[0] == target_hash:
                     s.append(hash_encode(merkle[1]))
                     target_hash = new_hash
@@ -369,7 +372,7 @@ class BlockchainProcessor(Processor):
         txdict = {}     # deserialized tx
         is_coinbase = True
         for raw_tx in txlist:
-            tx_hash = hash_encode(Hash(raw_tx.decode('hex')))
+            tx_hash = hash_encode(self.active_chain.tx_hash(raw_tx.decode('hex')))
             vds = deserialize.BCDataStream()
             vds.write(raw_tx.decode('hex'))
             try:

@@ -1,4 +1,4 @@
-
+import hashes
 
 class CryptoCur(object):
 
@@ -8,3 +8,12 @@ class CryptoCur(object):
 
     coin_name = 'CryptoCur'
     code = 'COIN'
+
+    def header_hash(self, x):
+        return hashes.sha256(x)
+
+    def tx_hash(self, x):
+        return hashes.sha256(x)
+
+    def base58_hash(self, x):
+        return hashes.sha256(x)

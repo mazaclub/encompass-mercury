@@ -23,6 +23,7 @@ setup(
         'encompassmercury.stratum_tcp',
         'encompassmercury.stratum_http',
         'encompassmercury.chains.__init__',
+        'encompassmercury.chains.hashes',
         'encompassmercury.chains.cryptocur',
         'encompassmercury.chains.mazacoin'
     ],

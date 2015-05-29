@@ -132,12 +132,13 @@ def hash_160_to_script_address(h160):
 def hash_160_to_address(h160, addrtype = None):
     """ Checks if the provided hash is actually 160bits or 20 bytes long and returns the address, else None
     """
+    active_chain = chainparams.get_active_chain()
     if addrtype is None:
-        addrtype = chainparams.get_active_chain().p2pkh_version
+        addrtype = active_chain.p2pkh_version
     if h160 is None or len(h160) is not 20:
         return None
     vh160 = chr(addrtype) + h160
-    h = Hash(vh160)
+    h = active_chain.base58_hash(vh160)
     addr = vh160 + h[0:4]
     return b58encode(addr)
 
@@ -202,7 +203,7 @@ def b58decode(v, length):
 
 
 def EncodeBase58Check(vchIn):
-    hash = Hash(vchIn)
+    hash = chainparams.get_active_chain().base58_hash(vchIn)
     return b58encode(vchIn + hash[0:4])
 
 
@@ -210,7 +211,7 @@ def DecodeBase58Check(psz):
     vchRet = b58decode(psz, None)
     key = vchRet[0:-4]
     csum = vchRet[-4:]
-    hash = Hash(key)
+    hash = chainparams.get_active_chain().base58_hash(key)
     cs32 = hash[0:4]
     if cs32 != csum:
         return None
