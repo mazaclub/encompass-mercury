@@ -81,8 +81,8 @@ def create_config(filename=None):
     config = ConfigParser.ConfigParser()
     # set some defaults, which will be overwritten by the config file
     config.add_section('server')
-    config.set('server', 'banner', 'Welcome to Electrum!')
-    config.set('server', 'banner_file', '/etc/electrum.banner')
+    config.set('server', 'banner', 'Welcome to Encompass!')
+    config.set('server', 'banner_file', '/etc/encompass.banner')
     config.set('server', 'host', 'localhost')
     config.set('server', 'electrum_rpc_port', '8000')
     config.set('server', 'report_host', '')
@@ -99,12 +99,12 @@ def create_config(filename=None):
     config.set('server', 'irc', 'no')
     config.set('server', 'irc_nick', '')
     config.set('server', 'coin', '')
-    config.set('server', 'logfile', '/var/log/electrum.log')
+    config.set('server', 'logfile', '/var/log/encompass.log')
     config.set('server', 'donation_address', '')
     config.set('server', 'max_subscriptions', '10000')
 
     config.add_section('leveldb')
-    config.set('leveldb', 'path', '/dev/shm/electrum_db')
+    config.set('leveldb', 'path', '/dev/shm/encompass_db')
     config.set('leveldb', 'pruning_limit', '100')
 
     # set network parameters
@@ -114,12 +114,12 @@ def create_config(filename=None):
     # try to find the config file in the default paths
     if not filename:
         for path in ('/etc/', ''):
-            filename = path + 'electrum.conf'
+            filename = path + 'encompass.conf'
             if os.path.isfile(filename):
                 break
 
     if not os.path.isfile(filename):
-        print 'could not find electrum configuration file "%s"' % filename
+        print 'could not find encompass configuration file "%s"' % filename
         sys.exit(1)
 
     attempt_read_config(config, filename)
@@ -237,7 +237,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
 
-    print_log("Starting Electrum server on", host)
+    print_log("Starting Encompass-Mercury server on", host)
 
     # Create hub
     dispatcher = Dispatcher(config)
@@ -305,4 +305,4 @@ if __name__ == '__main__':
 
     server_proc.join()
     chain_proc.join()
-    print_log("Electrum Server stopped")
+    print_log("Encompass-Mercury Server stopped")
