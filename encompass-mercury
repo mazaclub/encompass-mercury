@@ -1,7 +1,7 @@
 #! /bin/bash
 
 
-electrum_config="/etc/encompass.conf"
+electrum_config="/etc/encompass-mercury.conf"
 if [ ! -f $electrum_config ]; then
     echo "$electrum_config does not exist"
     echo "please run 'configure'"

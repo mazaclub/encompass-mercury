@@ -11,7 +11,7 @@ fi
 source_dir=$(cd "$(dirname "${BASH_SOURCE[0]}" )"; pwd)
 
 
-electrum_config="/etc/encompass.conf"
+electrum_config="/etc/encompass-mercury.conf"
 function read_config()
 {
     text=$1
@@ -25,7 +25,7 @@ function write_config()
 # create config file
 if [ ! -f $electrum_config ]; then
     echo "Creating config file"
-    cp $source_dir"/encompass.conf.sample" $electrum_config
+    cp $source_dir"/encompass-mercury.conf.sample" $electrum_config
 fi
 
 
