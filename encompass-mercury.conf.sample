@@ -31,3 +31,15 @@ bitcoind_port = 8332
 # user and password from bitcoin.conf
 bitcoind_user = 
 bitcoind_password = 
+
+[btc]
+coind_user = bitcoinrpc
+coind_password = bitcoinrpcpassword
+coind_host = localhost
+coind_port = 8332
+
+[mzc]
+coind_user = mazacoinrpc
+coind_password = mazacoinrpcpassword
+coind_host = localhost
+coind_port = 12832

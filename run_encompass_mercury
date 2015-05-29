@@ -129,6 +129,25 @@ def create_config(filename=None):
 
     return config
 
+def update_config_with_coin(config, coin):
+    # leveldb path
+    db_path = config.get('leveldb', 'path')
+    if not db_path.endswith('/'):
+        db_path = ''.join([ db_path, '/' ])
+    db_path = ''.join([ db_path, coin ])
+    config.set('leveldb', 'path', db_path)
+    try:
+        coind_user = config.get(coin, 'coind_user')
+        coind_pass = config.get(coin, 'coind_password')
+        coind_host = config.get(coin, 'coind_host')
+        coind_port = config.get(coin, 'coind_port')
+    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+        print('Could not get coind options from [{}] section of config.'.format(coin))
+        sys.exit(1)
+    config.set('bitcoind', 'bitcoind_user', coind_user)
+    config.set('bitcoind', 'bitcoind_password', coind_pass)
+    config.set('bitcoind', 'bitcoind_host', coind_host)
+    config.set('bitcoind', 'bitcoind_port', coind_port)
 
 def run_rpc_command(params, electrum_rpc_port):
     cmd = params[0]
@@ -218,6 +237,7 @@ if __name__ == '__main__':
     chainparams.set_active_chain(args.coin)
 
     setup_network_params(config)
+    update_config_with_coin(config, args.coin.lower())
 
     if ssl_certfile is '' or ssl_keyfile is '':
         stratum_tcp_ssl_port = None
