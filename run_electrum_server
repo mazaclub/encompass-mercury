@@ -28,15 +28,15 @@ import imp
 
 
 if os.path.dirname(os.path.realpath(__file__)) == os.getcwd():
-    imp.load_module('electrumserver', *imp.find_module('src'))
+    imp.load_module('encompassmercury', *imp.find_module('src'))
   
 
-from electrumserver import storage, networks, utils
-from electrumserver.processor import Dispatcher, print_log
-from electrumserver.server_processor import ServerProcessor
-from electrumserver.blockchain_processor import BlockchainProcessor
-from electrumserver.stratum_tcp import TcpServer
-from electrumserver.stratum_http import HttpServer
+from encompassmercury import storage, networks, utils
+from encompassmercury.processor import Dispatcher, print_log
+from encompassmercury.server_processor import ServerProcessor
+from encompassmercury.blockchain_processor import BlockchainProcessor
+from encompassmercury.stratum_tcp import TcpServer
+from encompassmercury.stratum_http import HttpServer
 
 
 logging.basicConfig()
