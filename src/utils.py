@@ -22,6 +22,8 @@ import time
 import hashlib
 import sys
 
+import chainparams
+
 __b58chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 __b58base = len(__b58chars)
 
@@ -107,29 +109,31 @@ def public_key_to_pubkey_address(public_key):
     return hash_160_to_pubkey_address(hash_160(public_key))
 
 
-def public_key_to_bc_address(public_key):
-    """ deprecated """
-    return public_key_to_pubkey_address(public_key)
+#def public_key_to_bc_address(public_key):
+#    """ deprecated """
+#    return public_key_to_pubkey_address(public_key)
 
 
-def hash_160_to_pubkey_address(h160, addrtype=None):
-    """ deprecated """
-    if not addrtype:
-        addrtype = PUBKEY_ADDRESS
-    return hash_160_to_address(h160, addrtype)
+#def hash_160_to_pubkey_address(h160, addrtype=None):
+#    """ deprecated """
+#    if not addrtype:
+#        addrtype = PUBKEY_ADDRESS
+#    return hash_160_to_address(h160, addrtype)
 
 
 def hash_160_to_pubkey_address(h160):
-    return hash_160_to_address(h160, PUBKEY_ADDRESS)
+    return hash_160_to_address(h160, chainparams.get_active_chain().p2pkh_version)
 
 
 def hash_160_to_script_address(h160):
-    return hash_160_to_address(h160, SCRIPT_ADDRESS)
+    return hash_160_to_address(h160, chainparams.get_active_chain().p2sh_version)
 
 
-def hash_160_to_address(h160, addrtype = 0):
+def hash_160_to_address(h160, addrtype = None):
     """ Checks if the provided hash is actually 160bits or 20 bytes long and returns the address, else None
     """
+    if addrtype is None:
+        addrtype = chainparams.get_active_chain().p2pkh_version
     if h160 is None or len(h160) is not 20:
         return None
     vh160 = chr(addrtype) + h160

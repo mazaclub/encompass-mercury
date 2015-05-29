@@ -10,6 +10,7 @@ setup(
         },
     py_modules=[
         'encompassmercury.__init__',
+        'encompassmercury.chainparams',
         'encompassmercury.utils',
         'encompassmercury.storage',
         'encompassmercury.deserialize',
@@ -20,7 +21,10 @@ setup(
         'encompassmercury.version',
         'encompassmercury.ircthread',
         'encompassmercury.stratum_tcp',
-        'encompassmercury.stratum_http'
+        'encompassmercury.stratum_http',
+        'encompassmercury.chains.__init__',
+        'encompassmercury.chains.cryptocur',
+        'encompassmercury.chains.mazacoin'
     ],
     description="Multi-Coin Electrum Server",
     author="Thomas Voegtlin",

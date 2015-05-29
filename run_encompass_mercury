@@ -37,6 +37,7 @@ from encompassmercury.server_processor import ServerProcessor
 from encompassmercury.blockchain_processor import BlockchainProcessor
 from encompassmercury.stratum_tcp import TcpServer
 from encompassmercury.stratum_http import HttpServer
+import encompassmercury.chainparams as chainparams
 
 
 logging.basicConfig()
@@ -197,6 +198,7 @@ def get_port(config, name):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--conf', metavar='path', default=None, help='specify a configuration file')
+    parser.add_argument('--coin', metavar='currency', default='MZC', help='coin to run')
     parser.add_argument('command', nargs='*', default=[], help='send a command to the server')
     args = parser.parse_args()
 
@@ -211,6 +213,9 @@ if __name__ == '__main__':
     stratum_http_ssl_port = get_port(config, 'stratum_http_ssl_port')
     ssl_certfile = config.get('server', 'ssl_certfile')
     ssl_keyfile = config.get('server', 'ssl_keyfile')
+
+    chainparams.init_chains()
+    chainparams.set_active_chain(args.coin)
 
     setup_network_params(config)
 
