@@ -99,7 +99,7 @@ def create_config(filename=None):
     config.set('server', 'irc', 'no')
     config.set('server', 'irc_nick', '')
     config.set('server', 'coin', '')
-    config.set('server', 'logfile', '/var/log/encompass.log')
+    config.set('server', 'logfile', '/var/log/encompass-mercury.log')
     config.set('server', 'donation_address', '')
     config.set('server', 'max_subscriptions', '10000')
 

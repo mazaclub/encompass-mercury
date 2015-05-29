@@ -16,7 +16,7 @@ banner_file = /etc/encompass.banner
 #irc_nick = <yournickname>
 #ssl_certfile = /path/to/electrum-server.crt
 #ssl_keyfile = /path/to/electrum-server.key
-logfile = /var/log/encompass.log
+logfile = /var/log/encompass-mercury.log
 donation_address = 
 
 [leveldb]
