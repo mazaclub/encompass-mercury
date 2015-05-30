@@ -9,6 +9,8 @@ import types
 
 from utils import hash_160_to_pubkey_address, hash_160_to_script_address, public_key_to_pubkey_address, hash_encode,\
     hash_160
+import chainparams
+from chainparams import run_chainhook
 
 
 class SerializationError(Exception):
@@ -239,30 +241,68 @@ def parse_TxOut(vds, i):
     d['index'] = i
     return d
 
+def deserialize_tx_fields(vds, d, is_coinbase, fields):
+    # dd is a separate dict containing data that doesn't go
+    # in the tx dict.
+    dd = {}
+    for name, action, add_to_dict in fields:
+        # special cases
+        if action == 'parse_inputs':
+            for i in range(dd['vin']):
+                o = parse_TxIn(vds)
+                if not is_coinbase:
+                    d[name].append(o)
+        elif action == 'parse_outputs':
+            for i in range(dd['vout']):
+                o = parse_TxOut(vds, i)
+                d[name].append(o)
+        elif action.startswith('read_bytes:'):
+            key = action.split(':')[1]
+            if add_to_dict:
+                d[name] = vds.read_bytes(dd[key])
+            else:
+                dd[name] = vds.read_bytes(dd[key])
+        else:
+            if add_to_dict:
+                d[name] = action()
+            else:
+                dd[name] = action()
 
 def parse_Transaction(vds, is_coinbase):
     d = {}
     start = vds.read_cursor
-    d['version'] = vds.read_int32()
-    n_vin = vds.read_compact_size()
-    d['inputs'] = []
-    for i in xrange(n_vin):
-            o = parse_TxIn(vds)
-            if not is_coinbase:
-                    d['inputs'].append(o)
-    n_vout = vds.read_compact_size()
-    d['outputs'] = []
-    for i in xrange(n_vout):
-            o = parse_TxOut(vds, i)
 
-            #if o['address'] == "None" and o['value']==0:
-            #        print("skipping strange tx output with zero value")
-            #        continue
-            # if o['address'] != "None":
-            d['outputs'].append(o)
+    fields = [('version', vds.read_int32, True),    # version
+            ('vin', vds.read_compact_size, False),  # vin
+            ('inputs', 'parse_inputs', True),       # inputs
+            ('vout', vds.read_compact_size, False), # vout
+            ('outputs', 'parse_outputs', True),     # outputs
+            ('lockTime', vds.read_uint32, True) ]   # locktime
 
-    d['lockTime'] = vds.read_uint32()
+    run_chainhook('transaction_parse_fields', vds, is_coinbase, fields)
+    deserialize_tx_fields(vds, d, is_coinbase, fields)
     return d
+
+#    d['version'] = vds.read_int32()
+#    n_vin = vds.read_compact_size()
+#    d['inputs'] = []
+#    for i in xrange(n_vin):
+#            o = parse_TxIn(vds)
+#            if not is_coinbase:
+#                    d['inputs'].append(o)
+#    n_vout = vds.read_compact_size()
+#    d['outputs'] = []
+#    for i in xrange(n_vout):
+#            o = parse_TxOut(vds, i)
+#
+#            #if o['address'] == "None" and o['value']==0:
+#            #        print("skipping strange tx output with zero value")
+#            #        continue
+#            # if o['address'] != "None":
+#            d['outputs'].append(o)
+#
+#    d['lockTime'] = vds.read_uint32()
+#    return d
 
 
 opcodes = Enumeration("Opcodes", [

@@ -43,3 +43,9 @@ coind_user = mazacoinrpc
 coind_password = mazacoinrpcpassword
 coind_host = localhost
 coind_port = 12832
+
+[clams]
+coind_user = clamrpc
+coind_password = clamrpcpassword
+coind_host = localhost
+coind_port = 30174
