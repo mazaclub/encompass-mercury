@@ -31,7 +31,7 @@ if os.path.dirname(os.path.realpath(__file__)) == os.getcwd():
     imp.load_module('encompassmercury', *imp.find_module('src'))
   
 
-from encompassmercury import storage, networks, utils
+from encompassmercury import storage, utils
 from encompassmercury.processor import Dispatcher, print_log
 from encompassmercury.server_processor import ServerProcessor
 from encompassmercury.blockchain_processor import BlockchainProcessor
@@ -63,20 +63,6 @@ def load_banner(config):
             config.set('server', 'banner', f.read())
     except IOError:
         pass
-
-def setup_network_params(config):
-    type = config.get('network', 'type')
-    params = networks.params.get(type)
-    utils.PUBKEY_ADDRESS = int(params.get('pubkey_address'))
-    utils.SCRIPT_ADDRESS = int(params.get('script_address'))
-    storage.GENESIS_HASH = params.get('genesis_hash')
-
-    if config.has_option('network', 'pubkey_address'):
-        utils.PUBKEY_ADDRESS = config.getint('network', 'pubkey_address')
-    if config.has_option('network', 'script_address'):
-        utils.SCRIPT_ADDRESS = config.getint('network', 'script_address')
-    if config.has_option('network', 'genesis_hash'):
-        storage.GENESIS_HASH = config.get('network', 'genesis_hash')
 
 def create_config(filename=None):
     config = ConfigParser.ConfigParser()
@@ -236,7 +222,6 @@ if __name__ == '__main__':
     chainparams.init_chains()
     chainparams.set_active_chain(args.coin)
 
-    setup_network_params(config)
     update_config_with_coin(config, args.coin.lower())
 
     if ssl_certfile is '' or ssl_keyfile is '':

@@ -27,11 +27,6 @@ import chainparams
 __b58chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 __b58base = len(__b58chars)
 
-global PUBKEY_ADDRESS
-global SCRIPT_ADDRESS
-PUBKEY_ADDRESS = 0
-SCRIPT_ADDRESS = 5
-
 def rev_hex(s):
     return s.decode('hex')[::-1].encode('hex')
 

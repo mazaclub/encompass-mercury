@@ -14,7 +14,6 @@ setup(
         'encompassmercury.utils',
         'encompassmercury.storage',
         'encompassmercury.deserialize',
-        'encompassmercury.networks',
         'encompassmercury.blockchain_processor',
         'encompassmercury.server_processor',
         'encompassmercury.processor',
