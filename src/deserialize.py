@@ -248,15 +248,17 @@ def deserialize_tx_fields(vds, d, is_coinbase, fields):
     for name, action, add_to_dict in fields:
         # special cases
         if action == 'parse_inputs':
+            d[name] = []
             for i in range(dd['vin']):
                 o = parse_TxIn(vds)
                 if not is_coinbase:
                     d[name].append(o)
         elif action == 'parse_outputs':
+            d[name] = []
             for i in range(dd['vout']):
                 o = parse_TxOut(vds, i)
                 d[name].append(o)
-        elif action.startswith('read_bytes:'):
+        elif isinstance(action, str) and action.startswith('read_bytes:'):
             key = action.split(':')[1]
             if add_to_dict:
                 d[name] = vds.read_bytes(dd[key])
