@@ -24,7 +24,8 @@ setup(
         'encompassmercury.chains.__init__',
         'encompassmercury.chains.hashes',
         'encompassmercury.chains.cryptocur',
-        'encompassmercury.chains.mazacoin'
+        'encompassmercury.chains.mazacoin',
+        'encompassmercury.chains.clam'
     ],
     description="Multi-Coin Electrum Server",
     author="Thomas Voegtlin",
