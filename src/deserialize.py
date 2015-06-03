@@ -429,6 +429,18 @@ def get_address_from_input_script(bytes):
 
     return [], [], None
 
+def try_output_matches(decoded, matches):
+    for ops, data_format, address_index in matches:
+        if match_decoded(decoded, ops):
+            if data_format is None:
+                return None
+            elif data_format == 'pubkey':
+                return public_key_to_pubkey_address(decoded[address_index][1])
+            elif data_format == 'hash160p2pkh':
+                return hash_160_to_pubkey_address(decoded[address_index][1])
+            elif data_format == 'hash160p2sh':
+                return hash_160_to_script_address(decoded[address_index][1])
+    return None
 
 def get_address_from_output_script(bytes):
     try:
@@ -436,33 +448,29 @@ def get_address_from_output_script(bytes):
     except:
         return None
 
+    # list of tuples:
+    # ([opcodes], format, address_index)
+    matches = []
+
     # The Genesis Block, self-payments, and pay-by-IP-address payments look like:
     # 65 BYTES:... CHECKSIG
-    match = [opcodes.OP_PUSHDATA4, opcodes.OP_CHECKSIG]
-    if match_decoded(decoded, match):
-        return public_key_to_pubkey_address(decoded[0][1])
+    matches.append(([opcodes.OP_PUSHDATA4, opcodes.OP_CHECKSIG], 'pubkey', 0))
 
     # coins sent to black hole
     # DUP HASH160 20 BYTES:... EQUALVERIFY CHECKSIG
-    match = [opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_0, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG]
-    if match_decoded(decoded, match):
-        return None
+    matches.append(([opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_0, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG], None, None))
 
     # Pay-by-Bitcoin-address TxOuts look like:
     # DUP HASH160 20 BYTES:... EQUALVERIFY CHECKSIG
-    match = [opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG]
-    if match_decoded(decoded, match):
-        return hash_160_to_pubkey_address(decoded[2][1])
+    matches.append(([opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG], 'hash160p2pkh', 2))
 
     # strange tx
-    match = [opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG, opcodes.OP_NOP]
-    if match_decoded(decoded, match):
-        return hash_160_to_pubkey_address(decoded[2][1])
+    matches.append(([opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG, opcodes.OP_NOP], 'hash160p2pkh', 2))
 
     # p2sh
-    match = [ opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUAL ]
-    if match_decoded(decoded, match):
-        addr = hash_160_to_script_address(decoded[1][1])
-        return addr
+    matches.append(([ opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUAL ], 'hash160p2sh', 1))
 
-    return None
+    run_chainhook('address_from_output_script_fields', opcodes, matches)
+
+    return try_output_matches(decoded, matches)
+
