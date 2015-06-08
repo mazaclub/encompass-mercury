@@ -4,7 +4,8 @@ setup(
     name="encompass-mercury",
     version="0.9",
     scripts=['run_encompass_mercury','encompass-mercury'],
-    install_requires=['plyvel','jsonrpclib', 'irc>=11'],
+    install_requires=['plyvel','jsonrpclib', 'irc>=11','coinhash==1.0'],
+    dependency_links=["git+https://github.com/kefkius/coinhash#egg=coinhash"],
     package_dir={
         'encompassmercury':'src'
         },
@@ -22,7 +23,6 @@ setup(
         'encompassmercury.stratum_tcp',
         'encompassmercury.stratum_http',
         'encompassmercury.chains.__init__',
-        'encompassmercury.chains.hashes',
         'encompassmercury.chains.cryptocur',
         'encompassmercury.chains.mazacoin',
         'encompassmercury.chains.clam'

@@ -1,4 +1,4 @@
-import hashes
+import coinhash
 
 chainhook_names = set()
 chainhooks = {}
@@ -28,10 +28,10 @@ class CryptoCur(object):
                 chainhooks[k] = coins
 
     def header_hash(self, x):
-        return hashes.sha256(x)
+        return coinhash.SHA256dHash(x)
 
     def tx_hash(self, x):
-        return hashes.sha256(x)
+        return coinhash.SHA256dHash(x)
 
     def base58_hash(self, x):
-        return hashes.sha256(x)
+        return coinhash.SHA256dHash(x)

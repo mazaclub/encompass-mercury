@@ -12,7 +12,7 @@ def init_chains():
     chain_modules = [__import__('encompassmercury.chains.'+name, fromlist=['encompassmercury.chains']) for name in chain_names]
 
     # skip these non-coins
-    non_coins = ['cryptocur', 'hashes']
+    non_coins = ['cryptocur']
     for name, c in zip(chain_names, chain_modules):
         if name in non_coins:
             continue
