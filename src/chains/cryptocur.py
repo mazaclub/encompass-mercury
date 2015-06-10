@@ -18,6 +18,9 @@ class CryptoCur(object):
     coin_name = 'CryptoCur'
     code = 'COIN'
 
+    irc_nick_prefix = 'E_'
+    irc_channel = '#'
+
     def __init__(self):
         global chainhook_names, chainhooks
         for k in dir(self):

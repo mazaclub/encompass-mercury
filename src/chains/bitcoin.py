@@ -7,3 +7,6 @@ class Currency(cryptocur.CryptoCur):
 
     coin_name = 'Bitcoin'
     code = 'BTC'
+
+    irc_nick_prefix = 'E_'
+    irc_channel = '#electrum'

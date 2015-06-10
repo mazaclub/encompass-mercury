@@ -6,6 +6,7 @@ import irc.client
 from utils import logger
 from utils import Hash
 from version import VERSION
+import chainparams
 
 out_msg = []
 
@@ -15,6 +16,7 @@ class IrcThread(threading.Thread):
         threading.Thread.__init__(self)
         self.processor = processor
         self.daemon = True
+        self.active_chain = chainparams.get_active_chain()
         self.stratum_tcp_port = config.get('server', 'stratum_tcp_port')
         self.stratum_http_port = config.get('server', 'stratum_http_port')
         self.stratum_tcp_ssl_port = config.get('server', 'stratum_tcp_ssl_port')
@@ -40,7 +42,7 @@ class IrcThread(threading.Thread):
             self.nick = Hash(self.host)[:5].encode("hex")
         self.pruning = True
         self.pruning_limit = config.get('leveldb', 'pruning_limit')
-        self.nick = 'E_' + self.nick
+        self.nick = self.active_chain.irc_nick_prefix + self.nick
         self.password = None
 
     def getname(self):
@@ -67,20 +69,20 @@ class IrcThread(threading.Thread):
         threading.Thread.start(self)
  
     def on_connect(self, connection, event):
-        connection.join("#electrum")
+        connection.join(self.active_chain.irc_channel)
 
     def on_join(self, connection, event):
-        m = re.match("(E_.*)!", event.source)
+        m = re.match("({}.*)!".format(self.active_chain.irc_nick_prefix), event.source)
         if m:
             connection.who(m.group(1))
 
     def on_quit(self, connection, event):
-        m = re.match("(E_.*)!", event.source)
+        m = re.match("({}.*)!".format(self.active_chain.irc_nick_prefix), event.source)
         if m:
             self.queue.put(('quit', [m.group(1)]))
         
     def on_kick(self, connection, event):
-        m = re.match("(E_.*)", event.arguments[0])
+        m = re.match("({}.*)".format(self.active_chain.irc_nick_prefix), event.arguments[0])
         if m:
             self.queue.put(('quit', [m.group(1)]))
 
@@ -102,7 +104,7 @@ class IrcThread(threading.Thread):
 
     def on_name(self, connection, event):
         for s in event.arguments[2].split():
-            if s.startswith("E_"):
+            if s.startswith(self.active_chain.irc_nick_prefix):
                 connection.who(s)
 
     def run(self):

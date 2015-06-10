@@ -7,3 +7,5 @@ class Currency(cryptocur.CryptoCur):
 
     coin_name = 'Mazacoin'
     code = 'MZC'
+
+    irc_channel = '#tate-wallet'
