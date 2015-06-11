@@ -24,15 +24,23 @@ setup(
         'encompassmercury.stratum_http',
         'encompassmercury.chains.__init__',
         'encompassmercury.chains.cryptocur',
+        'encompassmercury.chains.bitcoin',
+        'encompassmercury.chains.blackcoin',
+        'encompassmercury.chains.dash',
+        'encompassmercury.chains.dogecoin',
+        'encompassmercury.chains.feathercoin',
+        'encompassmercury.chains.litecoin',
+        'encompassmercury.chains.peercoin',
+        'encompassmercury.chains.viacoin',
         'encompassmercury.chains.mazacoin',
         'encompassmercury.chains.clam'
     ],
     description="Multi-Coin Electrum Server",
-    author="Thomas Voegtlin",
-    author_email="thomasv1@gmx.de",
+    author="Tyler Willis",
+    author_email="kefkius@maza.club",
     license="GNU Affero GPLv3",
-    url="https://github.com/spesmilo/electrum-server/",
-    long_description="""Server for the Electrum Lightweight Wallets"""
+    url="https://github.com/kefkius/encompass-mercury/",
+    long_description="""Multi-Coin Server for the Encompass Lightweight Wallets"""
 )
 
 
