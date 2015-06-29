@@ -4,3 +4,6 @@
 *.swp
 .gitignore
 encompass-mercury.conf
+build/
+dist/
+*.egg-info/
