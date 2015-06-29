@@ -4,7 +4,7 @@ setup(
     name="encompass-mercury",
     version="0.9",
     scripts=['run_encompass_mercury','encompass-mercury'],
-    install_requires=['plyvel','jsonrpclib', 'irc>=11','coinhash==1.0'],
+    install_requires=['plyvel','jsonrpclib', 'irc>=11','coinhash==1.1.2'],
     dependency_links=["git+https://github.com/kefkius/coinhash#egg=coinhash"],
     package_dir={
         'encompassmercury':'src'

@@ -161,6 +161,7 @@ def cmd_banner_update():
 
 def cmd_getinfo():
     return {
+        'chain': chainparams.get_active_chain().code,
         'blocks': chain_proc.storage.height,
         'peers': len(server_proc.peers),
         'sessions': len(dispatcher.request_dispatcher.get_sessions()),
