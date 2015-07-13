@@ -17,7 +17,7 @@ from storage import Storage
 from utils import logger
 import chainparams
 
-block_cache_size = 50
+block_cache_size = 20
 
 class BlockchainProcessor(Processor):
 
