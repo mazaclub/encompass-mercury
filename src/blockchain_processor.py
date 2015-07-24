@@ -9,6 +9,7 @@ import time
 import threading
 import urllib
 from collections import OrderedDict
+import ConfigParser
 
 import deserialize
 from processor import Processor, print_log
@@ -17,7 +18,7 @@ from storage import Storage
 from utils import logger
 import chainparams
 
-block_cache_size = 20
+default_block_cache_size = 20
 
 class BlockchainProcessor(Processor):
 
@@ -37,6 +38,10 @@ class BlockchainProcessor(Processor):
         self.watched_addresses = {}
 
         self.block_cache = OrderedDict()
+        try:
+            self.block_cache_size = config.getint('server', 'block_cache_size')
+        except ConfigParser.NoOptionError:
+            self.block_cache_size = default_block_cache_size
 
         self.history_cache = {}
         self.max_cache_size = 100000
@@ -615,10 +620,10 @@ class BlockchainProcessor(Processor):
         block['tx'] = rawtxdata
 
         # add to cache
-        if self.bitcoind_height - self.storage.height < block_cache_size:
+        if self.bitcoind_height - self.storage.height < self.block_cache_size:
             self.block_cache[block_hash] = block
         # pop the oldest block if necessary
-        if len(self.block_cache) > block_cache_size:
+        if len(self.block_cache) > self.block_cache_size:
             self.block_cache.popitem(False)
         return block
 
