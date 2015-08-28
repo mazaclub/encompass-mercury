@@ -51,3 +51,9 @@ coind_user = clamrpc
 coind_password = clamrpcpassword
 coind_host = localhost
 coind_port = 30174
+
+[pkb]
+coind_user = pkbrpc
+coind_password = pkbrpcpassword
+coind_host = localhost
+coind_port = 59060
