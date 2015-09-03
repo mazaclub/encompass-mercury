@@ -32,6 +32,7 @@ setup(
         'encompassmercury.chains.peercoin',
         'encompassmercury.chains.viacoin',
         'encompassmercury.chains.mazacoin',
+        'encompassmercury.chains.parkbyte',
         'encompassmercury.chains.clam'
     ],
     description="Multi-Coin Electrum Server",
