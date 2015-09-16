@@ -13,5 +13,6 @@ class Currency(cryptocur.CryptoCur):
     def transaction_parse_fields(self, vds, is_coinbase, fields):
         timestamp = ('timestamp', vds.read_int32, True)
         fields.insert(1, timestamp)
-irc_nick_prefix = 'EL_'
-irc_channel = '#electrum-doged'
+    
+    irc_nick_prefix = 'EL_'
+    irc_channel = '#electrum-doged'
