@@ -192,7 +192,7 @@ class Storage(object):
             self.height = 0
             self.last_hash = chainparams.get_active_chain().genesis_hash
             self.pruning_limit = config.getint('leveldb', 'pruning_limit')
-            db_version = self.db_version
+            db_version = DB_VERSION
             self.put_node('', Node.from_dict({}))
         # check version
         if db_version != DB_VERSION:
