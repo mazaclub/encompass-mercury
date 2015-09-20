@@ -93,6 +93,11 @@ def create_config(filename=None):
     config.add_section('leveldb')
     config.set('leveldb', 'path', '/dev/shm/encompass_db')
     config.set('leveldb', 'pruning_limit', '100')
+    config.set('leveldb', 'utxo_cache', str(1024*1024*1024))
+    config.set('leveldb', 'hist_cache', str(2048*1024*1024))
+    config.set('leveldb', 'addr_cache', str(256*1024*1024))
+    config.set('leveldb', 'profiler', 'no')
+
 
     # set network parameters
     config.add_section('network')
@@ -201,18 +206,18 @@ def get_port(config, name):
     except:
         return None
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--conf', metavar='path', default=None, help='specify a configuration file')
-    parser.add_argument('--coin', metavar='currency', default='MZC', help='coin to run')
-    parser.add_argument('command', nargs='*', default=[], help='send a command to the server')
-    args = parser.parse_args()
+# global
+shared = None
+chain_proc = None
+server_proc = None
+dispatcher = None
 
-    config = create_config(args.conf)
+def start_server(config):
+    global shared, chain_proc, server_proc, dispatcher
+
     logfile = config.get('server', 'logfile')
     utils.init_logger(logfile)
     host = config.get('server', 'host')
-    electrum_rpc_port = get_port(config, 'electrum_rpc_port')
     stratum_tcp_port = get_port(config, 'stratum_tcp_port')
     stratum_http_port = get_port(config, 'stratum_http_port')
     stratum_tcp_ssl_port = get_port(config, 'stratum_tcp_ssl_port')
@@ -228,25 +233,6 @@ if __name__ == '__main__':
     if ssl_certfile is '' or ssl_keyfile is '':
         stratum_tcp_ssl_port = None
         stratum_http_ssl_port = None
-
-    if len(args.command) >= 1:
-        try:
-            run_rpc_command(args.command, electrum_rpc_port)
-        except socket.error:
-            print "server not running"
-            sys.exit(1)
-        sys.exit(0)
-
-    try:
-        run_rpc_command(['getpid'], electrum_rpc_port)
-        is_running = True
-    except socket.error:
-        is_running = False
-
-    if is_running:
-        print "server already running"
-        sys.exit(1)
-
 
     print_log("Starting Encompass-Mercury server on", host)
 
@@ -291,7 +277,43 @@ if __name__ == '__main__':
     for server in transports:
         server.start()
 
-    
+
+def stop_server():
+    shared.stop()
+    server_proc.join()
+    chain_proc.join()
+    print_log("Encompass-Mercury Server stopped")
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--conf', metavar='path', default=None, help='specify a configuration file')
+    parser.add_argument('--coin', metavar='currency', default='MZC', help='coin to run')
+    parser.add_argument('command', nargs='*', default=[], help='send a command to the server')
+    args = parser.parse_args()
+    config = create_config(args.conf)
+
+    electrum_rpc_port = get_port(config, 'electrum_rpc_port')
+
+    if len(args.command) >= 1:
+        try:
+            run_rpc_command(args.command, electrum_rpc_port)
+        except socket.error:
+            print "server not running"
+            sys.exit(1)
+        sys.exit(0)
+
+    try:
+        run_rpc_command(['getpid'], electrum_rpc_port)
+        is_running = True
+    except socket.error:
+        is_running = False
+
+    if is_running:
+        print "server already running"
+        sys.exit(1)
+
+    start_server(config)
 
     from SimpleXMLRPCServer import SimpleXMLRPCServer
     server = SimpleXMLRPCServer(('localhost', electrum_rpc_port), allow_none=True, logRequests=False)
@@ -312,8 +334,5 @@ if __name__ == '__main__':
         except socket.timeout:
             continue
         except:
-            shared.stop()
+            stop_server()
 
-    server_proc.join()
-    chain_proc.join()
-    print_log("Encompass-Mercury Server stopped")

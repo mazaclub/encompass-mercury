@@ -218,17 +218,6 @@ def parse_TxIn(vds):
     d['prevout_n'] = vds.read_uint32()
     scriptSig = vds.read_bytes(vds.read_compact_size())
     d['sequence'] = vds.read_uint32()
-
-    if scriptSig:
-        pubkeys, signatures, address = get_address_from_input_script(scriptSig)
-    else:
-        pubkeys = []
-        signatures = []
-        address = None
-
-    d['address'] = address
-    d['signatures'] = signatures
-
     return d
 
 

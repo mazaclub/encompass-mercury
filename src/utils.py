@@ -37,17 +37,6 @@ def int_to_hex(i, length=1):
     return rev_hex(s)
 
 
-def var_int(i):
-    if i < 0xfd:
-        return int_to_hex(i)
-    elif i <= 0xffff:
-        return "fd" + int_to_hex(i, 2)
-    elif i <= 0xffffffff:
-        return "fe" + int_to_hex(i, 4)
-    else:
-        return "ff" + int_to_hex(i, 8)
-
-
 Hash = lambda x: hashlib.sha256(hashlib.sha256(x).digest()).digest()
 
 
@@ -246,3 +235,18 @@ def print_log(*args):
 
 def print_warning(message):
     logger.warning(message)
+
+
+# profiler
+class ProfiledThread(threading.Thread):
+    def __init__(self, filename, target):
+        self.filename = filename
+        threading.Thread.__init__(self, target = target)
+
+    def run(self):
+        import cProfile
+        profiler = cProfile.Profile()
+        profiler.enable()
+        threading.Thread.run(self)
+        profiler.disable()
+        profiler.dump_stats(self.filename)
