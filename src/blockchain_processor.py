@@ -635,8 +635,7 @@ class BlockchainProcessor(Processor):
 
             block['tx'] = rawtxdata
             # add to cache
-            if self.bitcoind_height - self.storage.height < self.block_cache_size:
-                self.block_cache[block_hash] = block
+            self.block_cache[block_hash] = block
             # pop the oldest block if necessary
             if len(self.block_cache) > self.block_cache_size:
                 self.block_cache.popitem(False)
