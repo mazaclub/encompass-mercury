@@ -19,7 +19,6 @@ import utils
 from utils import logger
 import chainparams
 
-default_block_cache_size = 20
 
 class BlockchainProcessor(Processor):
 
@@ -41,11 +40,7 @@ class BlockchainProcessor(Processor):
         self.watch_headers = []
         self.watched_addresses = {}
 
-        self.block_cache = OrderedDict()
-        try:
-            self.block_cache_size = config.getint('server', 'block_cache_size')
-        except ConfigParser.NoOptionError:
-            self.block_cache_size = default_block_cache_size
+        self.block_cache_size = config.getint('leveldb', 'block_cache_count')
 
         self.history_cache = {}
         self.merkle_cache = {}
@@ -597,9 +592,10 @@ class BlockchainProcessor(Processor):
 
 
     def getfullblock(self, block_hash):
-        cached_block = self.block_cache.get(block_hash, None)
+        cached_block = self.storage.get_full_block(str(block_hash))
         if cached_block is not None:
             return cached_block
+
         block = self.bitcoind('getblock', [block_hash])
 
         rawtxreq = []
@@ -635,10 +631,10 @@ class BlockchainProcessor(Processor):
 
             block['tx'] = rawtxdata
             # add to cache
-            self.block_cache[block_hash] = block
-            # pop the oldest block if necessary
-            if len(self.block_cache) > self.block_cache_size:
-                self.block_cache.popitem(False)
+            self.storage.add_full_block(str(block_hash), block)
+            # delete blocks beyond cache_size
+            self.storage.delete_old_blocks(int(block['height']) - self.block_cache_size)
+
             return block
 
 

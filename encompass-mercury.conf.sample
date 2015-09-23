@@ -18,14 +18,14 @@ banner_file = /etc/encompass.banner
 #ssl_keyfile = /path/to/electrum-server.key
 logfile = /var/log/encompass-mercury.log
 donation_address = 
-# number of blocks to keep in memory (fixes bug in some chains where we can't retrieve orphaned txs from the node)
-block_cache_size = 20
 
 [leveldb]
 # path to your database
 path = 
 # for each address, history will be pruned if it is longer than this limit
 pruning_limit = 100
+# number of blocks to keep in memory (fixes bug in some chains where we can't retrieve orphaned txs from the node)
+block_cache_count = 200
 
 [bitcoind]
 bitcoind_host = localhost

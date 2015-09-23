@@ -4,6 +4,7 @@ import hashlib
 import os
 import sys
 import threading
+import json
 
 from processor import print_log, logger
 from utils import bc_address_to_hash_160, hash_160_to_pubkey_address, hex_to_int, int_to_hex, Hash
@@ -181,6 +182,7 @@ class Storage(object):
             self.db_utxo = DB(self.dbpath, 'utxo', config.getint('leveldb', 'utxo_cache'))
             self.db_hist = DB(self.dbpath, 'hist', config.getint('leveldb', 'hist_cache'))
             self.db_addr = DB(self.dbpath, 'addr', config.getint('leveldb', 'addr_cache'))
+            self.db_blocks = DB(self.dbpath, 'blocks', config.getint('leveldb', 'block_cache'))
             self.db_undo = DB(self.dbpath, 'undo', None)
         except:
             logger.error('db init', exc_info=True)
@@ -537,11 +539,11 @@ class Storage(object):
         return self.root_hash if self.root_hash else ''
 
     def batch_write(self):
-        for db in [self.db_utxo, self.db_addr, self.db_hist, self.db_undo]:
+        for db in [self.db_utxo, self.db_addr, self.db_hist, self.db_undo, self.db_blocks]:
             db.write()
 
     def close(self):
-        for db in [self.db_utxo, self.db_addr, self.db_hist, self.db_undo]:
+        for db in [self.db_utxo, self.db_addr, self.db_hist, self.db_undo, self.db_blocks]:
             db.close()
 
     def save_height(self, block_hash, block_height):
@@ -656,3 +658,27 @@ class Storage(object):
                 touched_addr.add(addr)
 
         assert undo == {}
+
+    def add_full_block(self, block_hash, block):
+        self.db_blocks.put(block_hash.decode('hex'), json.dumps(block))
+#        print_log('added block {}: {}'.format(block['height'],block_hash))
+
+    def get_full_block(self, block_hash):
+        block = self.db_blocks.get(block_hash.decode('hex'))
+        if block:
+#            print_log('get_full_block:: found {}'.format(block_hash))
+            return json.loads(block)
+
+    def delete_old_blocks(self, height):
+        """Delete blocks older than/at height."""
+        blocks = []
+        for k, v in self.db_blocks.db.iterator():
+            b = json.loads(v)
+            if int(b['height']) <= height:
+                blocks.append(k)
+        # Delete the blocks
+        for block_hash in blocks:
+            self.db_blocks.delete(block_hash)
+#        if len(blocks):
+#            print_log('Deleted old blocks: {} - {}'.format(blocks[0].encode('hex'), blocks[-1].encode('hex')))
+
